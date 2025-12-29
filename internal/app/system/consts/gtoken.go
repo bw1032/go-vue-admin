@@ -4,9 +4,9 @@ const (
 	CacheMode      = 1
 	CacheModeRedis = 2
 	// 是否支持多端登录
-	MultiLogin = true
+	MultiLogin = false
 	TokenType  = "Bearer"
-	ServerName = "开源后台系统"
+	ServerName = "后台管理"
 	//超时时间 10 * 24 * 60 * 60
 	Timeout           = 86400
 	GTokenAdminPrefix = "admin"

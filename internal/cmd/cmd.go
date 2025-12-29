@@ -3,13 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/goflyfox/gtoken/gtoken"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/net/goai"
-	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/util/gconv"
-	"github.com/gogf/gf/v2/util/gmode"
 	"go-vue-admin/internal/app/system/consts"
 	"go-vue-admin/internal/app/system/controller/common"
 	"go-vue-admin/internal/app/system/controller/dept"
@@ -25,6 +18,14 @@ import (
 	"go-vue-admin/internal/app/system/model/do"
 	"go-vue-admin/internal/app/system/model/entity"
 	"go-vue-admin/internal/app/system/service"
+
+	"github.com/goflyfox/gtoken/gtoken"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/net/goai"
+	"github.com/gogf/gf/v2/os/gcmd"
+	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/util/gmode"
 )
 
 var (
@@ -112,6 +113,7 @@ func GetGtoken(ctx context.Context) (gfToken *gtoken.GfToken, err error) {
 		AuthExcludePaths: g.SliceStr{},                    // 不拦截路径 /user/info,/system/user/info,/system/user,
 		AuthAfterFunc:    AuthAfterFunc,
 		MultiLogin:       consts.MultiLogin,
+		CacheMode:        consts.CacheModeRedis,
 	}
 	err = gfToken.Start()
 	return

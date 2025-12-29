@@ -7,16 +7,16 @@
     </el-row>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>goadmin后台管理框架</h2>
+        <h2>余乐兑后台管理</h2>
         <p>
 
         </p>
-        <p>
+        <!-- <p>
           <b>当前版本:</b> <span>v{{ version }}</span>
-        </p>
-        <p>
+        </p> -->
+        <!-- <p>
           <el-tag type="danger">&yen;免费开源</el-tag>
-        </p>
+        </p> -->
         <p>
           <el-button
             type="primary"
@@ -35,12 +35,12 @@
       </el-col>
 
       <el-col :sm="24" :lg="12" style="padding-left: 50px">
-        <el-row>
+        <!-- <el-row>
           <el-col :span="12">
             <h2>技术选型</h2>
           </el-col>
-        </el-row>
-        <el-row>
+        </el-row> -->
+        <!-- <el-row>
           <el-col :span="6">
             <h4>后端技术</h4>
             <ul>
@@ -58,7 +58,7 @@
               <li>...</li>
             </ul>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-col>
     </el-row>
     <el-divider />

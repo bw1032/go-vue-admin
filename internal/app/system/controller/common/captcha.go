@@ -2,10 +2,11 @@ package common
 
 import (
 	"context"
-	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
-	"github.com/google/uuid"
 	v1 "go-vue-admin/api/v1"
 	"go-vue-admin/internal/app/system/service"
+
+	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
+	"github.com/google/uuid"
 )
 
 var Captcha = captchaController{}
