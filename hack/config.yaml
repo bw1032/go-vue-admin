@@ -4,13 +4,13 @@
 gfcli:
   gen:
     dao:
-      - link:            "mysql:root:123456@tcp(127.0.0.1:3306)/gvadmindb"
-        tables:          ""
+      - link:   "pgsql:postgres:123456@tcp(192.168.0.100:5432)/gvadmindb"
+        path: "./internal/app/submission"
+        tables:          "shop"
         tablesEx:        ""
         removePrefix:    "gf_"
         descriptionTag:  true
         noModelComment:  true
-        path: "./internal/app/system"
-    service:
-      srcFolder: "internal/app/system/logic"
-      dstFolder:  "internal/app/system/service"
+    # service:
+    #   srcFolder: "internal/app/system/logic"
+    #   dstFolder:  "internal/app/system/service"

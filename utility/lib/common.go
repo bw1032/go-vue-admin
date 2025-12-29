@@ -2,16 +2,18 @@ package lib
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
+
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/crypto/gsha1"
 	"github.com/gogf/gf/v2/frame/g"
 	"golang.org/x/mod/modfile"
-	"log"
-	"os"
-	"os/exec"
-	"runtime"
-	"strconv"
-	"strings"
 )
 
 // 查找某字符串值是否在切片中
@@ -136,15 +138,25 @@ func GetGodModule() string {
 
 // 格式化go文件
 func FmtGoFile(path string) {
+
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd", "/C", "go fmt "+path)
 	} else {
-		cmd = exec.Command("go fmt ", path)
+		cmd = exec.Command("go", "fmt", path)
 	}
 	if err := cmd.Start(); err != nil { // 运行命令
-		log.Fatal(err)
+		pc, filePath, line, _ := runtime.Caller(1)
+		function := runtime.FuncForPC(pc).Name()
+		_, fileName := filepath.Split(filePath)
+
+		err = fmt.Errorf("path: %v, err: %v, fun: %v, filename: %v, line: %v",
+			path, err.Error(), function, fileName, line)
+		fmt.Println(err)
+		return
 	}
+
+	return
 }
 
 // 截取子串位置

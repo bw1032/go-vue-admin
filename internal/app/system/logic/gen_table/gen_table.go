@@ -2,14 +2,6 @@ package gen_table
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/database/gdb"
-	"github.com/gogf/gf/v2/encoding/gcompress"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gfile"
-	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/os/gview"
-	"github.com/gogf/gf/v2/util/gconv"
 	v1 "go-vue-admin/api/v1"
 	"go-vue-admin/internal/app/system/consts"
 	"go-vue-admin/internal/app/system/dao"
@@ -21,6 +13,16 @@ import (
 	"go-vue-admin/utility/lib"
 	"strconv"
 	"strings"
+
+	"github.com/cloudflare/cfssl/log"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/encoding/gcompress"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/os/gview"
+	"github.com/gogf/gf/v2/util/gconv"
 )
 
 func init() {
@@ -215,9 +217,11 @@ func (s *sGenTable) InitTables(ctx context.Context, tableName string) (err error
 			var tableArr []gdb.Record
 			//获取所有表名
 			if tableName == "" {
-				tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+db.GetSchema()+"'")
+				// tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+db.GetSchema()+"'")
+				tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+"public"+"'")
 			} else {
-				tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+db.GetSchema()+"' AND TABLE_NAME='"+tableName+"'")
+				// tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+db.GetSchema()+"'")
+				tableArr, err = db.GetAll(ctx, "SELECT * FROM information_schema.Tables WHERE TABLE_SCHEMA='"+"public"+"'")
 				if err == nil {
 					//删除旧数据
 					err = s.DeleteTable(ctx, tableName)
@@ -225,14 +229,19 @@ func (s *sGenTable) InitTables(ctx context.Context, tableName string) (err error
 			}
 			utility.WriteErrLog(ctx, err, "获取数据库表名失败")
 			adminName := gconv.String(ctx.Value(consts.CtxAdminName))
+
 			for _, table := range tableArr {
 
 				tableName := table["TABLE_NAME"].String()
+				if len(tableName) <= 0 {
+					tableName = table["table_name"].String()
+				}
 				tableComment := table["TABLE_COMMENT"].String()
 
 				exist, err := s.CheckTable(ctx, tableName)
 				utility.WriteErrLog(ctx, err, "查询生成表失败")
 				if exist { //生成过，跳过
+					log.Info(tableName, "======================== exist continue ")
 					continue
 				}
 				moduleName := lib.GetPrefixName(tableName)
@@ -255,7 +264,7 @@ func (s *sGenTable) InitTables(ctx context.Context, tableName string) (err error
 					UpdateTime:     gtime.Now(),
 					UpdateBy:       adminName,
 				})
-				//fmt.Println(tableId)
+				log.Info(tableName, "========================", tableId, err)
 				utility.WriteErrLog(ctx, err, "添加表数据失败")
 				fieldList, err := db.Ctx(ctx).TableFields(ctx, tableName)
 				//fmt.Println(tableList)
@@ -359,11 +368,11 @@ func (s *sGenTable) InitTables(ctx context.Context, tableName string) (err error
 
 func (s *sGenTable) GetGolangTypeBySqlType(ctx context.Context, field *gdb.TableField) (typeName string, err error) {
 	db := g.DB()
-	typeName, err = db.CheckLocalTypeForField(ctx, field.Type, nil)
+	typeNameTmp, err := db.CheckLocalTypeForField(ctx, field.Type, nil)
 	if err != nil {
 		return
 	}
-	switch typeName {
+	switch typeNameTmp {
 	case gdb.LocalTypeDate, gdb.LocalTypeDatetime:
 		if consts.StdTime {
 			typeName = "time.Time"
